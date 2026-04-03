@@ -484,8 +484,16 @@ function init() {
     key.removeAttribute('data-state');
   });
 
-  // Pick a random word
-  targetWord = ANSWERS[Math.floor(Math.random() * ANSWERS.length)];
+  // Pick a random word, avoiding repeats until all words have been used
+  let seen = JSON.parse(localStorage.getItem('eiken-wordle-seen') || '[]');
+  let remaining = ANSWERS.filter(w => !seen.includes(w));
+  if (remaining.length === 0) {
+    seen = [];
+    remaining = ANSWERS;
+  }
+  targetWord = remaining[Math.floor(Math.random() * remaining.length)];
+  seen.push(targetWord);
+  localStorage.setItem('eiken-wordle-seen', JSON.stringify(seen));
 }
 
 // ===== THEME =====
